@@ -1,12 +1,12 @@
 ### *Pesquisa aplicada à resolução do jogo Hopeless*
 
-##### **Objectivo**
+###### **Objectivo**
 
 Pretende-se neste trabalho implementar o jogo solitário Hopeless, bem como algumas estratégias de pesquisa que permitam ao computador jogá-lo.
 
  
 
-##### **Descrição**
+###### **Descrição**
 
 Hopeless é um jogo do tipo solitário. Uma descrição do jogo pode ser encontrada aqui.
 
@@ -16,6 +16,6 @@ Devem ser comparados diferentes métodos de pesquisa sistemática e heurística 
 
  
 
-##### **Metodologias**
+###### **Metodologias**
 
 Pesquisa Sistemática/Informada, Algoritmo A*, Heurísticas
