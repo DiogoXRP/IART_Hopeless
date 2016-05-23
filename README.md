@@ -1,4 +1,4 @@
-### **_Pesquisa aplicada à resolução do jogo Hopeless_**
+### *Pesquisa aplicada à resolução do jogo Hopeless*
 
 ##### **Objectivo**
 
