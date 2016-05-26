@@ -21,7 +21,7 @@ public class Interface {
 			dificulty = scanner.nextInt();
 		// System.out.print(CLEAR);
 		Board board = new Board(ROWS, COLUMNS, dificulty);
-		// Board board = new Board(dificulty);
+		//Board board = new Board(dificulty);
 		board.createBoard();
 		board.printBoard();
 

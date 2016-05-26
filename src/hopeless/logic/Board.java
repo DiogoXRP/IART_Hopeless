@@ -13,7 +13,6 @@ public class Board {
 	private char[][] board;
 	private int rows;
 	private int columns;
-	private int[] dificulty = { 3, 4, 5, 6 };
 	private ArrayList<Character> colours = new ArrayList<Character>();
 	private int nr_of_colours;
 	private ArrayList<Position> visited = new ArrayList<Position>();
@@ -24,7 +23,7 @@ public class Board {
 		this.rows = rows;
 		this.columns = columns;
 		this.board = new char[rows][columns];
-		if (dificulty == 3 || dificulty == 4 || dificulty == 5 || dificulty == 6) {
+		if (dificulty == 2 || dificulty == 3 || dificulty == 4 || dificulty == 5 || dificulty == 6) {
 			this.nr_of_colours = dificulty;
 		}
 		colours.add('A');
@@ -43,16 +42,16 @@ public class Board {
 	public Board(int dificulty){
 		this.rows = 10;
 		this.columns = 20;
-		char temp[][] = {{'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
-				{'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
-				{'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
-				{'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
+		char temp[][] = {{'A', 'B', 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
 				{'A', 'B', 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
 				{'A', 'B', 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
 				{'A', 'B', 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
-				{'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
-				{'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
-				{'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'}
+				{'A', 'B', 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
+				{'A', 'B', 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
+				{'A', 'B', 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
+				{'A', 'B', 'B', 'B', 'C', 'C', 'C', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
+				{'A', 'B', 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
+				{'A', 'B', 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'}
 				};
 		this.board = temp;
 		if (dificulty == 3 || dificulty == 4 || dificulty == 5 || dificulty == 6) {
@@ -169,11 +168,11 @@ public class Board {
 	}
 
 	public void clearEmptyCols() {
-
-		int ind = col_height.indexOf(0);
-		if(ind != -1){
+		int ind;
+		while((ind = col_height.indexOf(0))!=-1){
 			pullLeftFrom(ind);
 			col_height.remove(ind);
+			System.out.println("Col_height.size: " + col_height.size());
 		}
 	}
 
