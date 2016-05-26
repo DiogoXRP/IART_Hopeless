@@ -1,0 +1,9 @@
+#!/bin/bash
+# Run Hopeless
+
+cd hopeless
+
+javac logic/*.java ui/*.java
+
+cd ..
+java hopeless.ui/Interface
