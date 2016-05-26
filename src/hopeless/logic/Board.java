@@ -39,6 +39,38 @@ public class Board {
 		}
 
 	}
+	
+	public Board(int dificulty){
+		this.rows = 10;
+		this.columns = 20;
+		char temp[][] = {{'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
+				{'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
+				{'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
+				{'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
+				{'A', 'B', 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
+				{'A', 'B', 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
+				{'A', 'B', 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
+				{'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
+				{'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
+				{'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'}
+				};
+		this.board = temp;
+		if (dificulty == 3 || dificulty == 4 || dificulty == 5 || dificulty == 6) {
+			this.nr_of_colours = dificulty;
+		}
+		colours.add('A');
+		colours.add('B');
+		colours.add('C');
+		colours.add('D');
+		colours.add('E');
+		colours.add('F');
+		
+		for(int i = 0; i < 20; i++){
+			col_height.add(10);
+		}
+	}
+	
+	
 
 	public void setPositionContent(int row, int column, char content) {
 		board[row][column] = content;
@@ -104,7 +136,7 @@ public class Board {
 		// Passo 2 - Limpar o array visited;
 		visited.clear();
 
-		//printBoard();
+		printBoard();
 		System.out.println("\n");
 		// Passo 3 - Puxar para baixo e esquerda todas as coisas para completar
 		// espaços
@@ -112,8 +144,8 @@ public class Board {
 		
 		
 		for (int ci = 0; ci < columns; ci++) {
-			level = 0;
-			for (int ri = ((int)col_height.get(ci) - 1); ri >= level; ri--) {
+			level = 10 - (int)col_height.get(ci);
+			for (int ri = 9; ri >= level; ri--) {
 				
 				if (board[ri][ci] == ' ') {
 					pullDownFrom(ri, ci);
@@ -122,9 +154,18 @@ public class Board {
 			}
 		}
 
+		System.out.println("\nAfter PullDown\n");
+		printBoard();
 		clearEmptyCols();
 
-		//printBoard();
+		System.out.println("\nAfter Clear empty col\n");
+		printBoard();
+		
+		System.out.println("\nCol_heights: ");
+		for(int xx=0; xx< col_height.size() ; xx++){
+			System.out.println("col_height "+xx+": " + col_height.get(xx));
+		}
+		
 	}
 
 	public void clearEmptyCols() {
@@ -166,8 +207,6 @@ public class Board {
 		col_height.set(col, (int)col_height.get(col)-1);
 		level++;
 		
-		printBoard();
-		System.out.println();
 	}
 
 	public void professionalalgorithm(char colour, int row, int col) {
