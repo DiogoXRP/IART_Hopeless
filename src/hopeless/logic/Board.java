@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Vector;
 
 public class Board {
 	private char[][] board;
@@ -16,6 +17,8 @@ public class Board {
 	private ArrayList<Character> colours = new ArrayList<Character>();
 	private int nr_of_colours;
 	private ArrayList<Position> visited = new ArrayList<Position>();
+	private Vector col_height = new Vector();
+	private static int level;
 
 	public Board(int rows, int columns, int dificulty) {
 		this.rows = rows;
@@ -30,6 +33,10 @@ public class Board {
 		colours.add('D');
 		colours.add('E');
 		colours.add('F');
+		
+		for(int i = 0; i < 20; i++){
+			col_height.add(10);
+		}
 
 	}
 
@@ -81,33 +88,105 @@ public class Board {
 		char colour = board[row][col];
 
 		professionalalgorithm(colour, row, col);
-		System.out.println("rows: " + this.rows);
-		System.out.println("columns: " + this.columns);
-		/*DEBUG 
-		for(int i = 0 ; i<visited.size();i++)
-			System.out.println("visited " + i + ": (" + visited.get(i).getRow() + "," + visited.get(i).getCol() + ")");
-			*/
+
+		/*
+		 * DEBUG System.out.println("rows: " + this.rows); System.out.println(
+		 * "columns: " + this.columns); for(int i = 0 ; i<visited.size();i++)
+		 * System.out.println("visited " + i + ": (" + visited.get(i).getRow() +
+		 * "," + visited.get(i).getCol() + ")");
+		 */
+
+		// Passo 1 - Ver os visited e apagá-los do board
+		for (int v = 0; v < visited.size(); v++) {
+			board[visited.get(v).getRow()][visited.get(v).getCol()] = ' ';
+		}
+
+		// Passo 2 - Limpar o array visited;
+		visited.clear();
+
+		//printBoard();
+		System.out.println("\n");
+		// Passo 3 - Puxar para baixo e esquerda todas as coisas para completar
+		// espaços
+
 		
-		//Passo 1 - Ver os visited e apagá-los do board
-		//Passo 2 - Limpar o array visited;
-		//Passo 3 - Puxar para baixo e esquerda todas as coisas para completar espaços
-		//Passo 4 - atualizar this.rows this.columns
+		
+		for (int ci = 0; ci < columns; ci++) {
+			level = 0;
+			for (int ri = ((int)col_height.get(ci) - 1); ri >= level; ri--) {
+				
+				if (board[ri][ci] == ' ') {
+					pullDownFrom(ri, ci);
+					ri++;
+				}
+			}
+		}
+
+		clearEmptyCols();
+
+		//printBoard();
+	}
+
+	public void clearEmptyCols() {
+
+		int ind = col_height.indexOf(0);
+		if(ind != -1){
+			pullLeftFrom(ind);
+			col_height.remove(ind);
+		}
+	}
+
+	public void pullLeftFrom(int col) {
+
+		for (int i = col; i < columns; i++) {
+
+			if (i == columns - 1) {
+				for (int k = 0; k < rows; k++) {
+					board[k][i] = ' ';
+				}
+				columns--;
+			} else {
+				for (int j = 0; j < rows; j++) {
+					board[j][i] = board[j][i + 1];
+				}
+			}
+		}
+
+	}
+
+	public void pullDownFrom(int row, int col) {
+
+		while (row > (10 - (int)col_height.get(col))) {
+
+			board[row][col] = board[row - 1][col];
+			row--;
+		}
+
+		board[10-(int)col_height.get(col)][col] = ' ';
+		col_height.set(col, (int)col_height.get(col)-1);
+		level++;
+		
+		printBoard();
+		System.out.println();
 	}
 
 	public void professionalalgorithm(char colour, int row, int col) {
 		visited.add(new Position(row, col));
 
 		if (row - 1 >= 0 && !visited.contains(new Position(row - 1, col))) {
-			if(colour==board[row-1][col])
+			if (colour == board[row - 1][col])
 				professionalalgorithm(colour, row - 1, col);
-		}if (col - 1 >= 0 && !visited.contains(new Position(row, col - 1))) {
-			if(colour==board[row][col-1])
+		}
+		if (col - 1 >= 0 && !visited.contains(new Position(row, col - 1))) {
+			if (colour == board[row][col - 1])
 				professionalalgorithm(colour, row, col - 1);
-		} if (row + 1 < rows && !visited.contains(new Position(row + 1, col))) {
-			if(colour==board[row+1][col])
+		}
+		if (row + 1 < rows && !visited.contains(new Position(row + 1, col))) {
+			if (colour == board[row + 1][col])
 				professionalalgorithm(colour, row + 1, col);
-		} if (col + 1 < columns && !visited.contains(new Position(row, col + 1))) {
-			if(colour==board[row][col+1])
+		}
+		if (col + 1 < columns && !visited.contains(new Position(row, col + 1))) {
+			if (colour == board[row][col + 1])
 				professionalalgorithm(colour, row, col + 1);
 		}
 	}
