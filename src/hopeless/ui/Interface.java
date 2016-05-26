@@ -27,6 +27,24 @@ public class Interface {
 		board.createBoard();
 		board.printBoard();
 		
+		//click
+		int click_row = -1;
+		int click_col = -1;
+		
+		Scanner gamescanner = new Scanner(System.in);
+		System.out.print("Insert line number: ");
+		
+		if(gamescanner.hasNextInt())
+			click_row = gamescanner.nextInt();
+		
+		gamescanner = new Scanner(System.in);
+		System.out.print("Insert column number: ");
+		
+		if(gamescanner.hasNextInt())
+			click_col = gamescanner.nextInt();
+		
+		board.Click(click_row, click_col);
+		
 	}
 
 }
