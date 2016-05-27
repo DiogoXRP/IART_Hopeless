@@ -1,8 +1,10 @@
 package hopeless.ui;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import hopeless.logic.Board;
+import hopeless.logic.Position;
 
 public class Interface {
 
@@ -39,7 +41,7 @@ public class Interface {
 		board.printBoard();
 
 		// click
-		while (!game_over) {
+		/*while (!game_over) {
 			
 			int click_row = -1;
 			int click_col = -1;
@@ -59,6 +61,15 @@ public class Interface {
 			board.Click(click_row, click_col);
 			game_over = board.checkGameOver();
 			//board.ReverseCost();
+		}*/
+		ArrayList<Position> boardStates = new ArrayList<Position>();
+		for (Position boardState : boardStates){
+			board.Click(boardState.getRow(), boardState.getCol());
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException i) {
+				i.printStackTrace();
+			}
 		}
 		System.out.println("GAME OVERRRRR !!!!!!!! Your SCORE CAN SUCK MY DICK!!");
 		System.out.println("Just kidding, it's: " + board.getScore());
