@@ -1,5 +1,10 @@
 package hopeless.logic;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -9,7 +14,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Vector;
 
-public class Board {
+public class Board implements Serializable{
 	private char[][] board;
 	private int rows;
 	private int columns;
@@ -17,13 +22,24 @@ public class Board {
 	private int nr_of_colours;
 	private ArrayList<Position> visited = new ArrayList<Position>();
 	private Vector col_height = new Vector();
-	private static int level;
-	private static int score = 0;
-	private static int temp_score = 0;
-	private static int dif;
-	
+	private int level;
+	private int score = 0;
+	private int temp_score = 0;
+	private int dif;
+
 	int heuristicCost = 0; // Heuristic cost
 	int finalCost = 0; // G+H
+
+	public Board(Board clonable) {
+		this.board = clonable.getBoard();
+		this.col_height = clonable.getcol_height();
+		this.level = clonable.getLevel();
+		this.score = clonable.getScore();
+		this.rows = clonable.getRows();
+		this.columns = clonable.getColumns();
+		this.nr_of_colours = clonable.getnr_of_colours();
+		this.dif = clonable.getDif();
+	}
 
 	public Board(int rows, int columns, int dificulty) {
 		this.rows = rows;
@@ -138,9 +154,9 @@ public class Board {
 		for (int v = 0; v < visited.size(); v++) {
 			board[visited.get(v).getRow()][visited.get(v).getCol()] = ' ';
 		}
-		
+
 		// Pass 1.5 - Adicionar ao score;
-		this.score += this.dif*Math.pow((visited.size()-1), 2);
+		this.score += this.dif * Math.pow((visited.size() - 1), 2);
 
 		// Passo 2 - Limpar o array visited;
 		visited.clear();
@@ -160,8 +176,8 @@ public class Board {
 		}
 		clearEmptyCols();
 
-		System.out.println("\nAfter Clear empty col\n");
-		printBoard();
+		// DEBUG System.out.println("\nAfter Clear empty col\n");
+		// DEBUG printBoard();
 
 	}
 
@@ -252,11 +268,73 @@ public class Board {
 		return true;
 
 	}
-	
-	public int getScore(){
+
+	public int getScore() {
 		return this.score;
 	}
+
+	public Vector getcol_height() {
+		return this.col_height;
+	}
+
+	public int getColumns() {
+		return this.columns;
+	}
+
+	public void clearVisited() {
+		visited.clear();
+	}
+
+	public ArrayList<Position> getVisited() {
+		return visited;
+	}
+
+	public void Heuristic() {
+		boolean alternate = false;
+		ArrayList<Integer> each_polygon_size = new ArrayList<Integer>();
+		for (int slice = 0; slice < (int) Collections.max(col_height) + columns - 1; slice++) {
+			// System.out.println("slice " + slice);
+			int z1 = slice < columns ? 0 : slice - columns + 1;
+			int z2 = slice < (int) Collections.max(col_height) ? 0 : slice - (int) Collections.max(col_height) + 1;
+			if (!alternate)
+				for (int jj = slice - z2; jj >= z1; jj--) {
+					int prev_vis_size = visited.size();
+					if (!visited.contains(new Position(jj, slice - jj)))
+						professionalalgorithm(board[jj][slice - jj], jj, slice - jj);
+					if (visited.size() - prev_vis_size > 1)
+						each_polygon_size.add(visited.size() - prev_vis_size);
+				}
+			alternate = !alternate;
+		}
+		for (int i = 0; i < each_polygon_size.size(); i++) {
+			this.heuristicCost += this.dif * Math.pow(each_polygon_size.get(i) - 1, 2);
+		}
+
+	}
+
+	public void calcFinalCost(){
+		this.finalCost = 1/this.heuristicCost + 1/this.score;
+	}
 	
+	/*public int compareTo(Board b2) {
+		return Integer.compare(this.finalCost, b2.finalCost);
+	}*/
+	
+	public int getLevel(){
+		return this.level;
+	}
+	
+	public int getnr_of_colours(){
+		return this.nr_of_colours;
+	}
+	
+	public int getRows(){
+		return this.rows;
+	}
+	
+	public int getDif(){
+		return this.dif;
+	}
 	
 	
 }

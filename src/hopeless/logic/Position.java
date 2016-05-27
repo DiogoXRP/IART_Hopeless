@@ -1,12 +1,21 @@
 package hopeless.logic;
 
-public class Position {
+import java.io.Serializable;
+
+public class Position implements Serializable {
 
 	private int row;
 	private int col;
+	private double cost;
 	public Position(int row, int col){
 		this.row = row;
 		this.col = col;
+	}
+	
+	public Position(int row, int col, double cost){
+		this.row = row;
+		this.col = col;
+		this.cost = cost;
 	}
 	
 	public int getRow(){
@@ -15,6 +24,7 @@ public class Position {
 	public int getCol(){
 		return this.col;
 	}
+	
 	
 	@Override
 	public boolean equals(Object o) 

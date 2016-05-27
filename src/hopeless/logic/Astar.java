@@ -1,8 +1,15 @@
 package hopeless.logic;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.PriorityQueue;
+import java.util.Vector;
 
 /// Tab inicial percorre todos os clickables [diagonais] e descobre o score que o novo Tabuleiro teria associado [g];
 // Calcula heuristica para esse tabuleiro-filho[h] e, deste modo, tabuleiro-filho fica com f [g+h]
@@ -12,121 +19,70 @@ import java.util.PriorityQueue;
 //http://www.codebytes.in/2015/02/a-shortest-path-finding-algorithm.html
 public class Astar {
 
-	public static final int DIAGONAL_COST = 14;
-	public static final int V_H_COST = 10;
+	private Board current_board;
+	// private static BoardComparator comp = new BoardComparator();
+	private ArrayList<Board> open = new ArrayList<Board>();
+	private ArrayList<Position> visited = new ArrayList<Position>();
 
-	/*static class boardState {
-		int heuristicCost = 0; // Heuristic cost
-		int finalCost = 0; // G+H
-		int i, j;
-		boardState parent;
+	public Astar() {
 
-		boardState(int i, int j) {
-			this.i = i;
-			this.j = j;
-		}
-
-		@Override
-		public String toString() {
-			return "[" + this.i + ", " + this.j + "]";
-		}
-	}*/
-
-	// Blocked boardStates are just null boardState values in grid
-	static boardState[][] grid = new boardState[5][5];
-
-	static PriorityQueue<boardState> open;
-
-	static boolean closed[][];
-	static int startI, startJ;
-	static int endI, endJ;
-
-	public static void setBlocked(int i, int j) {
-		grid[i][j] = null;
 	}
 
-	public static void setStartboardState(int i, int j) {
-		startI = i;
-		startJ = j;
-	}
+	public Astar(Board starting) {
+		ArrayList<Board> test_boards = new ArrayList<Board>();
+		int index = 0;
+		current_board = new Board(starting);
+		Vector col_height = current_board.getcol_height();
+		int columns = current_board.getColumns();
 
-	public static void setEndboardState(int i, int j) {
-		endI = i;
-		endJ = j;
-	}
+		boolean alternate = false;
+		for (int slice = 0; slice < (int) Collections.max(col_height) + columns - 1; slice++) {
+			// System.out.println("slice " + slice);
+			int z1 = slice < columns ? 0 : slice - columns + 1;
+			int z2 = slice < (int) Collections.max(col_height) ? 0 : slice - (int) Collections.max(col_height) + 1;
+			if (!alternate)
+				for (int jj = slice - z2; jj >= z1; jj--) {
+					// System.out.println(board[jj][slice-jj]);
+					if (!current_board.getVisited().contains(new Position(jj, slice - jj))) {
+						System.out.println("entrou");
+						Board demo = (Board)deepClone(current_board);
+						test_boards.add(demo);
+						
+						current_board.professionalalgorithm(current_board.getBoard()[jj][slice - jj], jj, slice - jj);
+						System.out.println("curr_b");
+						current_board.printBoard();
+						System.out.println("END CURR B \n");
+						test_boards.get(index).clearVisited();
+						test_boards.get(index).professionalalgorithm(test_boards.get(index).getBoard()[jj][slice - jj],
+								jj, slice - jj);
 
-	static void checkAndUpdateCost(boardState current, boardState t, int cost) {
-		if (t == null || closed[t.i][t.j])
-			return;
-		int t_final_cost = t.heuristicCost + cost;
+						if (test_boards.get(index).getVisited().size() > 1) {
+							System.out.println("mais a dentro");
+							test_boards.get(index).Click(jj, slice - jj);
+							test_boards.get(index).Heuristic();
+							test_boards.get(index).calcFinalCost();
+							open.add(test_boards.get(index));
+							open.get(index).printBoard();
+							index++;
+						} else
+							test_boards.remove(index);
+					}
+				}
 
-		boolean inOpen = open.contains(t);
-		if (!inOpen || t_final_cost < t.finalCost) {
-			t.finalCost = t_final_cost;
-			t.parent = current;
-			if (!inOpen)
-				open.add(t);
+			alternate = !alternate;
+			// if(alternate)
+			// System.out.println("\n");
 		}
-	}
-
-	public static void AStar() {
-
-		// add the start location to open list.
-		open.add(grid[startI][startJ]);
-
-		boardState current;
-
-		while (true) {
-			current = open.poll();
-			if (current == null)
-				break;
-			closed[current.i][current.j] = true;
-
-			if (current.equals(grid[endI][endJ])) {
-				return;
-			}
-
-			boardState t;
-			if (current.i - 1 >= 0) {
-				t = grid[current.i - 1][current.j];
-				checkAndUpdateCost(current, t, current.finalCost + V_H_COST);
-
-				if (current.j - 1 >= 0) {
-					t = grid[current.i - 1][current.j - 1];
-					checkAndUpdateCost(current, t, current.finalCost + DIAGONAL_COST);
-				}
-
-				if (current.j + 1 < grid[0].length) {
-					t = grid[current.i - 1][current.j + 1];
-					checkAndUpdateCost(current, t, current.finalCost + DIAGONAL_COST);
-				}
-			}
-
-			if (current.j - 1 >= 0) {
-				t = grid[current.i][current.j - 1];
-				checkAndUpdateCost(current, t, current.finalCost + V_H_COST);
-			}
-
-			if (current.j + 1 < grid[0].length) {
-				t = grid[current.i][current.j + 1];
-				checkAndUpdateCost(current, t, current.finalCost + V_H_COST);
-			}
-
-			if (current.i + 1 < grid.length) {
-				t = grid[current.i + 1][current.j];
-				checkAndUpdateCost(current, t, current.finalCost + V_H_COST);
-
-				if (current.j - 1 >= 0) {
-					t = grid[current.i + 1][current.j - 1];
-					checkAndUpdateCost(current, t, current.finalCost + DIAGONAL_COST);
-				}
-
-				if (current.j + 1 < grid[0].length) {
-					t = grid[current.i + 1][current.j + 1];
-					checkAndUpdateCost(current, t, current.finalCost + DIAGONAL_COST);
-				}
-			}
+		for (int i = 0; i < open.size(); i++) {
+			open.get(i).printBoard();
+			System.out.println("foi o " + i);
 		}
+
+		/*
+		 * while (true) {
+		 * 
+		 * }
+		 */
 	}
 
 	/*
@@ -154,6 +110,18 @@ public class Astar {
 	 * alternate = !alternate; //if(alternate) // System.out.println("\n"); } }
 	 */
 
-	public void Heuristic(int row, int col) {
-	}
+	public static Object deepClone(Object object) {
+		   try {
+		     ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		     ObjectOutputStream oos = new ObjectOutputStream(baos);
+		     oos.writeObject(object);
+		     ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+		     ObjectInputStream ois = new ObjectInputStream(bais);
+		     return ois.readObject();
+		   }
+		   catch (Exception e) {
+		     e.printStackTrace();
+		     return null;
+		   }
+		 }
 }

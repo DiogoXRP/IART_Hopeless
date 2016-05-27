@@ -6,6 +6,9 @@ import java.util.Scanner;
 import hopeless.logic.Board;
 import hopeless.logic.Position;
 
+import hopeless.logic.Astar;
+import hopeless.logic.Board;
+
 public class Interface {
 
 	private static final String CLEAR = "\033[H\033[2J";
@@ -35,11 +38,14 @@ public class Interface {
 		if (scanner.hasNextInt())
 			dificulty = scanner.nextInt();
 		// System.out.print(CLEAR);
-		Board board = new Board(ROWS, COLUMNS, dificulty);
-		//Board board = new Board(dificulty);
-		board.createBoard();
+		//Board board = new Board(ROWS, COLUMNS, dificulty);
+		Board board = new Board(dificulty);
+		//board.createBoard();
 		board.printBoard();
 
+		System.out.println("ASTAR: \n\n");
+		 
+		Astar as = new Astar(board);
 		// click
 		/*while (!game_over) {
 			
@@ -62,6 +68,7 @@ public class Interface {
 			game_over = board.checkGameOver();
 			//board.ReverseCost();
 		}*/
+		
 		ArrayList<Position> boardStates = new ArrayList<Position>();
 		for (Position boardState : boardStates){
 			board.Click(boardState.getRow(), boardState.getCol());
@@ -71,7 +78,7 @@ public class Interface {
 				i.printStackTrace();
 			}
 		}
-		System.out.println("GAME OVERRRRR !!!!!!!! Your SCORE CAN SUCK MY DICK!!");
+		System.out.println("GAME OVERRRRR !!!!!!!! ");
 		System.out.println("Just kidding, it's: " + board.getScore());
 
 	}
