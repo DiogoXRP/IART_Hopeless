@@ -18,6 +18,8 @@ public class Board {
 	private ArrayList<Position> visited = new ArrayList<Position>();
 	private Vector col_height = new Vector();
 	private static int level;
+	private static int score = 0;
+	private static int dif;
 
 	public Board(int rows, int columns, int dificulty) {
 		this.rows = rows;
@@ -25,6 +27,7 @@ public class Board {
 		this.board = new char[rows][columns];
 		if (dificulty == 2 || dificulty == 3 || dificulty == 4 || dificulty == 5 || dificulty == 6) {
 			this.nr_of_colours = dificulty;
+			this.dif = dificulty;
 		}
 		colours.add('A');
 		colours.add('B');
@@ -32,27 +35,28 @@ public class Board {
 		colours.add('D');
 		colours.add('E');
 		colours.add('F');
-		
-		for(int i = 0; i < 20; i++){
+
+		for (int i = 0; i < 20; i++) {
 			col_height.add(10);
 		}
 
 	}
-	
-	public Board(int dificulty){
+
+	public Board(int dificulty) {
 		this.rows = 10;
 		this.columns = 20;
-		char temp[][] = {{'A', 'B', 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
-				{'A', 'B', 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
-				{'A', 'B', 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
-				{'A', 'B', 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
-				{'A', 'B', 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
-				{'A', 'B', 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
-				{'A', 'B', 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
-				{'A', 'B', 'B', 'B', 'C', 'C', 'C', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
-				{'A', 'B', 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'},
-				{'A', 'B', 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'}
-				};
+		char temp[][] = {
+				{ 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'C', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'B', 'C', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B',
+						'B' } };
 		this.board = temp;
 		if (dificulty == 3 || dificulty == 4 || dificulty == 5 || dificulty == 6) {
 			this.nr_of_colours = dificulty;
@@ -63,13 +67,12 @@ public class Board {
 		colours.add('D');
 		colours.add('E');
 		colours.add('F');
-		
-		for(int i = 0; i < 20; i++){
+
+		for (int i = 0; i < 20; i++) {
 			col_height.add(10);
 		}
+		this.dif = dificulty;
 	}
-	
-	
 
 	public void setPositionContent(int row, int column, char content) {
 		board[row][column] = content;
@@ -131,48 +134,38 @@ public class Board {
 		for (int v = 0; v < visited.size(); v++) {
 			board[visited.get(v).getRow()][visited.get(v).getCol()] = ' ';
 		}
+		
+		// Pass 1.5 - Adicionar ao score;
+		this.score += this.dif*Math.pow((visited.size()-1), 2);
 
 		// Passo 2 - Limpar o array visited;
 		visited.clear();
 
-		printBoard();
-		System.out.println("\n");
 		// Passo 3 - Puxar para baixo e esquerda todas as coisas para completar
 		// espaços
 
-		
-		
 		for (int ci = 0; ci < columns; ci++) {
-			level = 10 - (int)col_height.get(ci);
+			level = 10 - (int) col_height.get(ci);
 			for (int ri = 9; ri >= level; ri--) {
-				
+
 				if (board[ri][ci] == ' ') {
 					pullDownFrom(ri, ci);
 					ri++;
 				}
 			}
 		}
-
-		System.out.println("\nAfter PullDown\n");
-		printBoard();
 		clearEmptyCols();
 
 		System.out.println("\nAfter Clear empty col\n");
 		printBoard();
-		
-		System.out.println("\nCol_heights: ");
-		for(int xx=0; xx< col_height.size() ; xx++){
-			System.out.println("col_height "+xx+": " + col_height.get(xx));
-		}
-		
+
 	}
 
 	public void clearEmptyCols() {
 		int ind;
-		while((ind = col_height.indexOf(0))!=-1){
+		while ((ind = col_height.indexOf(0)) != -1) {
 			pullLeftFrom(ind);
 			col_height.remove(ind);
-			System.out.println("Col_height.size: " + col_height.size());
 		}
 	}
 
@@ -196,16 +189,16 @@ public class Board {
 
 	public void pullDownFrom(int row, int col) {
 
-		while (row > (10 - (int)col_height.get(col))) {
+		while (row > (10 - (int) col_height.get(col))) {
 
 			board[row][col] = board[row - 1][col];
 			row--;
 		}
 
-		board[10-(int)col_height.get(col)][col] = ' ';
-		col_height.set(col, (int)col_height.get(col)-1);
+		board[10 - (int) col_height.get(col)][col] = ' ';
+		col_height.set(col, (int) col_height.get(col) - 1);
 		level++;
-		
+
 	}
 
 	public void professionalalgorithm(char colour, int row, int col) {
@@ -227,5 +220,36 @@ public class Board {
 			if (colour == board[row][col + 1])
 				professionalalgorithm(colour, row, col + 1);
 		}
+	}
+
+	public boolean checkGameOver() {
+		char selected_colour;
+		visited.clear();
+		ArrayList<Integer> polygon_sizes = new ArrayList<Integer>();
+		ArrayList<Position> total_visited = new ArrayList<Position>();
+		if (board.length != 0) {
+			for (int y = 0; y < columns; y++) {
+				for (int x = 9; x >= (10 - (int) col_height.get(y)); x--) {
+					if (!total_visited.contains(new Position(x, y))) {
+						selected_colour = board[x][y];
+						professionalalgorithm(selected_colour, x, y);
+						polygon_sizes.add(visited.size());
+						total_visited.addAll(visited);
+						visited.clear();
+					}
+
+				}
+			}
+			total_visited.clear();
+			for (int p_size : polygon_sizes)
+				if (p_size != 1)
+					return false;
+		}
+		return true;
+
+	}
+	
+	public int getScore(){
+		return this.score;
 	}
 }

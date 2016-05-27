@@ -9,6 +9,7 @@ public class Interface {
 	private static final String CLEAR = "\033[H\033[2J";
 	private static final int ROWS = 10;
 	private static final int COLUMNS = 20;
+	private static boolean game_over = false;
 
 	public static void main(String[] args) {
 		System.out.println("Welcome to Hopeless\n");
@@ -20,13 +21,14 @@ public class Interface {
 		if (scanner.hasNextInt())
 			dificulty = scanner.nextInt();
 		// System.out.print(CLEAR);
-		Board board = new Board(ROWS, COLUMNS, dificulty);
-		//Board board = new Board(dificulty);
-		board.createBoard();
+		//Board board = new Board(ROWS, COLUMNS, dificulty);
+		Board board = new Board(dificulty);
+		//board.createBoard();
 		board.printBoard();
 
 		// click
-		while (true) {
+		while (!game_over) {
+			
 			int click_row = -1;
 			int click_col = -1;
 
@@ -43,7 +45,10 @@ public class Interface {
 				click_col = gamescanner.nextInt();
 
 			board.Click(click_row, click_col);
+			game_over = board.checkGameOver();
 		}
+		System.out.println("GAME OVERRRRR !!!!!!!! Your SCORE CAN SUCK MY DICK!!");
+		System.out.println("Just kidding, it's: " + board.getScore());
 
 	}
 
