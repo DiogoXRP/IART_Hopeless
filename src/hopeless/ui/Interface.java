@@ -11,6 +11,18 @@ public class Interface {
 	private static final int COLUMNS = 20;
 	private static boolean game_over = false;
 
+	
+	//ASTAR:
+	// PASSO 1 : 
+	// PERCORRE NA DIAGONAL, Calcula/Testa [sem alterar o board] inverso do custo OnClick;
+	// PASSO 2 :
+	// Heurística : Percorrer a matriz toda [tambem na diagonal] e, sem pullDown/Left ver quantos pontos no maximo fariamos.
+	// Nota: Começar pelo maior poligono encontrado;
+	
+	// PAsso 3 :
+	// Implementar A* em si;
+	
+	
 	public static void main(String[] args) {
 		System.out.println("Welcome to Hopeless\n");
 		// System.out.print(CLEAR);
@@ -46,6 +58,7 @@ public class Interface {
 
 			board.Click(click_row, click_col);
 			game_over = board.checkGameOver();
+			//board.ReverseCost();
 		}
 		System.out.println("GAME OVERRRRR !!!!!!!! Your SCORE CAN SUCK MY DICK!!");
 		System.out.println("Just kidding, it's: " + board.getScore());

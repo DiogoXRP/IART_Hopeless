@@ -19,7 +19,11 @@ public class Board {
 	private Vector col_height = new Vector();
 	private static int level;
 	private static int score = 0;
+	private static int temp_score = 0;
 	private static int dif;
+	
+	int heuristicCost = 0; // Heuristic cost
+	int finalCost = 0; // G+H
 
 	public Board(int rows, int columns, int dificulty) {
 		this.rows = rows;
@@ -252,4 +256,7 @@ public class Board {
 	public int getScore(){
 		return this.score;
 	}
+	
+	
+	
 }
