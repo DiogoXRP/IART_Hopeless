@@ -1,7 +1,73 @@
-%estado inicial
+?- use_module(library(lists)).
+
+%%%%%%%%%%%%%%%%% PRINT TABULEIRO    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+print_list([]).
+print_list([C|Rest]) :- 
+							write(C),
+							write(' '),
+							print_list(Rest).
+print_matrix([],_).
+print_matrix([C|Rest],N):-
+						Nr is N + 1,
+						write(Nr),
+						write(' '),
+						print_list(C),
+						nl,
+						print_matrix(Rest,Nr).
+
+%% print_coord:-
+%%						write('  '),
+%%						write('A'),
+%%						write(' '),
+%%						write('B'),
+%%						write(' '),
+%%						write('C'),
+%%						write(' '),
+%%						write('D'),
+%%						write(' '),
+%%						write('E'),
+%%						nl.
+
+
+%%%%%%%%%%%%%%%%% MANIPULAR TABULEIRO %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+set_piece_list(1, Elem, [_|L], [Elem|L]).
+set_piece_list(I, Elem, [H|L], [H|ResL]):-
+  I > 1,
+  I1 is I-1,
+  set_piece_list(I1, Elem, L, ResL).
+
+set_piece_tabuleiro(1, Col, NewElem, [H|T], [NewH|T]) :-  set_piece_list(Col, NewElem, H, NewH).
+set_piece_tabuleiro(Row, Col, NewElem, [H|T], [H|ResT]):-
+  Row > 1,
+  Row1 is Row-1,
+  set_piece_tabuleiro(Row1, Col, NewElem, T, ResT).          
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%% VERIFICAR PEÇAS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+getListElemAt(1, [ElemAtTheHead|_], ElemAtTheHead).
+getListElemAt(Pos, [_|RemainingElems], Elem):-
+	Pos > 1,
+	Pos1 is Pos-1,
+	getListElemAt(Pos1, RemainingElems, Elem).
+
+getMatrixElemAt(ElemRow, ElemCol,_, Elem) :-
+ElemRow > 5, Elem = 'U', ! ; ElemCol > 5, Elem = 'U', ! ; ElemRow < 1, Elem = 'U', ! ; ElemCol < 1, Elem = 'U', ! .
+
+getMatrixElemAt(1, ElemCol, [ListAtTheHead|_], Elem):-
+    getListElemAt(ElemCol, ListAtTheHead, Elem).
+
+getMatrixElemAt(ElemRow, ElemCol, [_|RemainingLists], Elem):-
+	ElemRow > 1,
+	ElemRow1 is ElemRow-1,
+	getMatrixElemAt(ElemRow1, ElemCol, RemainingLists, Elem).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% estado inicial
 estado_inicial(b(0,0)).
 
-%estado final
+%% estado final
 estado_final(b(2,0)).
 
 		%% A*
