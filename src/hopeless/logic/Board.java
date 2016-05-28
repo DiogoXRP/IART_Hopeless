@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Vector;
 
-public class Board implements Serializable{
+public class Board implements Serializable {
 	private char[][] board;
 	private int rows;
 	private int columns;
@@ -26,19 +26,24 @@ public class Board implements Serializable{
 	private int score = 0;
 	private int temp_score = 0;
 	private int dif;
+	private Board parent;
 
-	int heuristicCost = 0; // Heuristic cost
-	int finalCost = 0; // G+H
+	double heuristicCost = 0; // Heuristic cost
+	double finalCost = 0; // G+H
 
 	public Board(Board clonable) {
-		this.board = clonable.getBoard();
-		this.col_height = clonable.getcol_height();
-		this.level = clonable.getLevel();
-		this.score = clonable.getScore();
-		this.rows = clonable.getRows();
-		this.columns = clonable.getColumns();
-		this.nr_of_colours = clonable.getnr_of_colours();
-		this.dif = clonable.getDif();
+		if (clonable != null) {
+			this.board = clonable.getBoard();
+			this.col_height = clonable.getcol_height();
+			this.level = clonable.getLevel();
+			this.score = clonable.getScore();
+			this.rows = clonable.getRows();
+			this.columns = clonable.getColumns();
+			this.nr_of_colours = clonable.getnr_of_colours();
+			this.dif = clonable.getDif();
+			this.parent = clonable.parent;
+		}
+		// COPIAR PAI?
 	}
 
 	public Board(int rows, int columns, int dificulty) {
@@ -59,6 +64,7 @@ public class Board implements Serializable{
 		for (int i = 0; i < 20; i++) {
 			col_height.add(10);
 		}
+		this.parent = null;
 
 	}
 
@@ -66,16 +72,16 @@ public class Board implements Serializable{
 		this.rows = 10;
 		this.columns = 20;
 		char temp[][] = {
-				{ 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-				{ 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-				{ 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-				{ 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-				{ 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-				{ 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-				{ 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-				{ 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-				{ 'C', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-				{ 'B', 'C', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B',
+				{ 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'E', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'E', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'D', 'D', 'E', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'D', 'D', 'E', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'E', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'E', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'E', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'E', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'C', 'A', 'B', 'A', 'A', 'B', 'B', 'B', 'B', 'B', 'E', 'E', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'B', 'C', 'B', 'A', 'A', 'B', 'B', 'B', 'B', 'B', 'E', 'E', 'B', 'B', 'B', 'B', 'B', 'B', 'B',
 						'B' } };
 		this.board = temp;
 		if (dificulty == 3 || dificulty == 4 || dificulty == 5 || dificulty == 6) {
@@ -92,6 +98,7 @@ public class Board implements Serializable{
 			col_height.add(10);
 		}
 		this.dif = dificulty;
+		this.parent = null;
 	}
 
 	public void setPositionContent(int row, int column, char content) {
@@ -312,29 +319,53 @@ public class Board implements Serializable{
 
 	}
 
-	public void calcFinalCost(){
-		this.finalCost = 1/this.heuristicCost + 1/this.score;
+	public void calcFinalCost() {
+		this.finalCost = 1 / this.heuristicCost + 1 / this.score;
+		// DEBUG System.out.println("heuristicCost: " + this.heuristicCost);
+		//System.out.println("Score: " + this.score);
+		//System.out.println("final cost: " + this.finalCost);
 	}
-	
-	/*public int compareTo(Board b2) {
-		return Integer.compare(this.finalCost, b2.finalCost);
-	}*/
-	
-	public int getLevel(){
+
+	/*
+	 * public int compareTo(Board b2) { return Integer.compare(this.finalCost,
+	 * b2.finalCost); }
+	 */
+
+	public int getLevel() {
 		return this.level;
 	}
-	
-	public int getnr_of_colours(){
+
+	public int getnr_of_colours() {
 		return this.nr_of_colours;
 	}
-	
-	public int getRows(){
+
+	public int getRows() {
 		return this.rows;
 	}
-	
-	public int getDif(){
+
+	public int getDif() {
 		return this.dif;
 	}
-	
-	
+
+	public boolean equals(Object other) {
+		if (other instanceof Board)
+			return (Arrays.deepEquals(this.board, ((Board) other).getBoard()));
+		return false;
+
+	}
+
+	public boolean isPathShorterThan(Board other) {
+		if (other != null)
+			return this.score > other.getScore();
+		return false;
+	}
+
+	public void setParent(Board pai) {
+		this.parent = pai;
+	}
+
+	public Board getParent() {
+		return this.parent;
+	}
+
 }

@@ -20,8 +20,9 @@ import java.util.Vector;
 public class Astar {
 
 	private Board current_board;
-	// private static BoardComparator comp = new BoardComparator();
-	private ArrayList<Board> open = new ArrayList<Board>();
+	private static BoardComparator comp = new BoardComparator();
+	private PriorityQueue<Board> open = new PriorityQueue<Board>(40, comp);
+	private ArrayList<Board> closed = new ArrayList<Board>();
 	private ArrayList<Position> visited = new ArrayList<Position>();
 
 	public Astar() {
@@ -29,13 +30,128 @@ public class Astar {
 	}
 
 	public Astar(Board starting) {
+		open.addAll(getNeighbours(starting));
+
+		/*
+		 * DEBUG for (int i = 0; i < open.size(); i++) {
+		 * open.get(i).printBoard(); System.out.println("foi o " + i); }
+		 */
+		/*
+		 * System.out.println("prints: \n"); while(!open.isEmpty()){
+		 * open.poll().printBoard(); System.out.println("\n"); }
+		 */
+		boolean only_once = true;
+		while (true) {
+			System.out.println("open size: " + open.size());
+			current_board = (Board) deepClone(open.poll());
+			closed.add(current_board);
+			/*
+			 * DEBUG System.out.println("prints: " + current_board.finalCost +
+			 * "\n"); while(!open.isEmpty()){ Board temp = open.poll();
+			 * temp.printBoard(); System.out.println("F: " + temp.finalCost);
+			 * System.out.println("\n"); }
+			 */
+
+			//if (current_board != null)
+				try{if (current_board.checkGameOver())
+						return; // TODO check return values
+				}
+				catch(Exception e){
+					if(only_once && current_board==null){
+						System.out.println("prints: ");
+						only_once = false;
+						while(!open.isEmpty())
+							open.poll().printBoard();
+					}
+					
+				}
+					
+
+			ArrayList<Board> neighbours = getNeighbours(current_board);
+
+			for (int n = 0; n < neighbours.size(); n++) {
+				if (!closed.contains(neighbours.get(n))) {
+					PriorityQueue<Board> aux = new PriorityQueue<Board>();
+					// System.out.println("OPEN: ");
+					//while (!open.isEmpty())
+					//	open.poll(); // TODO Check if (why) this works lol
+					// System.out.println("\n");
+
+					// System.out.println("DONE OPEN \n");
+					try{aux.addAll(open);}
+					catch(Exception e){
+						//System.out.println("Add all print : ");
+						//while(!open.isEmpty())
+						//	open.poll().printBoard();
+					}
+					Board existing = null;
+					if (open.contains(neighbours.get(n)))
+						existing = (Board) deepClone(retrieveBoard(neighbours.get(n), aux));
+					if ((open.contains(neighbours.get(n)) && neighbours.get(n).isPathShorterThan(existing))
+							|| !open.contains(neighbours.get(n))) {
+						if (open.contains(neighbours.get(n))) {
+							neighbours.get(n).setParent(current_board);
+							PriorityQueue<Board> replace = new PriorityQueue<Board>();// set
+																						// neighbours.get(n)
+																						// to
+																						// replace
+																						// previous
+																						// open
+																						// element
+							PriorityQueue<Board> aux2 = new PriorityQueue<Board>();
+							aux2.addAll(open);
+							replace.addAll(replace(neighbours.get(n), aux2));
+							open.clear(); // empty open
+							open.addAll(replace);
+						}
+						if (!open.contains(neighbours.get(n))) {
+							System.out.print(".");
+							neighbours.get(n).setParent(current_board);
+							open.add(neighbours.get(n));
+						}
+
+					}
+				}
+
+			}
+		}
+	}
+
+	public PriorityQueue<Board> replace(Board board, PriorityQueue<Board> aux) {
+		ArrayList<Board> popped = new ArrayList<Board>();
+		int index = 0;
+		while (!aux.isEmpty()) {
+			Board temp = aux.poll(); // pop
+			if (board.equals(temp))
+				popped.add(board);
+			else
+				popped.add(temp);
+			index++;
+		}
+		PriorityQueue<Board> result = new PriorityQueue<Board>();
+		result.addAll(popped);
+		return result;
+
+	}
+
+	public Board retrieveBoard(Board toFind, PriorityQueue<Board> aux) {
+		while (!aux.isEmpty()) {
+			Board temp = aux.poll();
+			if (toFind.equals(temp))
+				return temp;
+		}
+		return null;
+	}
+
+	public ArrayList<Board> getNeighbours(Board current) {
+		ArrayList<Board> neighb = new ArrayList<Board>();
 		ArrayList<Board> test_boards = new ArrayList<Board>();
 		int index = 0;
-		current_board = new Board(starting);
+		current_board = new Board(current);
 		Vector col_height = current_board.getcol_height();
 		int columns = current_board.getColumns();
-
 		boolean alternate = false;
+		if(col_height.size() > 0)
 		for (int slice = 0; slice < (int) Collections.max(col_height) + columns - 1; slice++) {
 			// System.out.println("slice " + slice);
 			int z1 = slice < columns ? 0 : slice - columns + 1;
@@ -44,25 +160,24 @@ public class Astar {
 				for (int jj = slice - z2; jj >= z1; jj--) {
 					// System.out.println(board[jj][slice-jj]);
 					if (!current_board.getVisited().contains(new Position(jj, slice - jj))) {
-						System.out.println("entrou");
-						Board demo = (Board)deepClone(current_board);
+						Board demo = (Board) deepClone(current_board);
 						test_boards.add(demo);
-						
+
 						current_board.professionalalgorithm(current_board.getBoard()[jj][slice - jj], jj, slice - jj);
-						System.out.println("curr_b");
-						current_board.printBoard();
-						System.out.println("END CURR B \n");
 						test_boards.get(index).clearVisited();
 						test_boards.get(index).professionalalgorithm(test_boards.get(index).getBoard()[jj][slice - jj],
 								jj, slice - jj);
 
 						if (test_boards.get(index).getVisited().size() > 1) {
-							System.out.println("mais a dentro");
 							test_boards.get(index).Click(jj, slice - jj);
 							test_boards.get(index).Heuristic();
 							test_boards.get(index).calcFinalCost();
-							open.add(test_boards.get(index));
-							open.get(index).printBoard();
+							test_boards.get(index).setParent(current_board); // TODO
+																				// Check
+																				// if
+																				// right
+							neighb.add(test_boards.get(index));
+							// open.get(index).printBoard();
 							index++;
 						} else
 							test_boards.remove(index);
@@ -73,18 +188,12 @@ public class Astar {
 			// if(alternate)
 			// System.out.println("\n");
 		}
-		for (int i = 0; i < open.size(); i++) {
-			open.get(i).printBoard();
-			System.out.println("foi o " + i);
-		}
-
-		/*
-		 * while (true) {
-		 * 
-		 * }
-		 */
+		return neighb;
 	}
 
+	public ArrayList<Board> getClosed() {
+		return this.closed;
+	}
 	/*
 	 * public void ReverseCost(){
 	 * 
@@ -111,17 +220,16 @@ public class Astar {
 	 */
 
 	public static Object deepClone(Object object) {
-		   try {
-		     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		     ObjectOutputStream oos = new ObjectOutputStream(baos);
-		     oos.writeObject(object);
-		     ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-		     ObjectInputStream ois = new ObjectInputStream(bais);
-		     return ois.readObject();
-		   }
-		   catch (Exception e) {
-		     e.printStackTrace();
-		     return null;
-		   }
-		 }
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(object);
+			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+			ObjectInputStream ois = new ObjectInputStream(bais);
+			return ois.readObject();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

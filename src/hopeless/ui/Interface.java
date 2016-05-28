@@ -69,7 +69,7 @@ public class Interface {
 			//board.ReverseCost();
 		}*/
 		
-		ArrayList<Position> boardStates = new ArrayList<Position>();
+		/* DEBUG ArrayList<Position> boardStates = new ArrayList<Position>();
 		for (Position boardState : boardStates){
 			board.Click(boardState.getRow(), boardState.getCol());
 			try {
@@ -77,10 +77,37 @@ public class Interface {
 			} catch (InterruptedException i) {
 				i.printStackTrace();
 			}
+		}*/
+		
+		System.out.println("Parents: ");
+		ArrayList<Board> cl = as.getClosed();
+		Board current = cl.get(cl.size()-1);
+		current.printBoard();
+		System.out.println("Score " + current.getScore());
+		System.out.println("\n");
+		//while(current.getParent() != null){
+			//System.out.print("\n");
+		while(true){
+			
+			current.getParent().printBoard();
+			System.out.println("Score " + current.getParent().getScore());
+			
+			System.out.println("\n");
+			for(int i = 0; i < cl.size(); i++){
+				if(cl.get(i).equals(current.getParent()))
+					current = new Board((Board) as.deepClone(cl.get(i)));
+			}
+			if(current.getParent().equals(board))
+				break;
 		}
+			
+		System.out.println("\n");
+		board.printBoard();
 		System.out.println("GAME OVERRRRR !!!!!!!! ");
-		System.out.println("Just kidding, it's: " + board.getScore());
+		//System.out.println("Just kidding, it's: " + board.getScore());
 
 	}
+	
+	
 
 }
