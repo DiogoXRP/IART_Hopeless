@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 import hopeless.logic.Board;
 import hopeless.logic.Position;
-
+import hopeless.logic.Greedy;
 import hopeless.logic.Astar;
 import hopeless.logic.Board;
 
@@ -43,9 +43,8 @@ public class Interface {
 		//board.createBoard();
 		board.printBoard();
 
-		System.out.println("ASTAR: \n\n");
-		 
-		Astar as = new Astar(board);
+		
+		
 		// click
 		/*while (!game_over) {
 			
@@ -79,6 +78,11 @@ public class Interface {
 			}
 		}*/
 		
+		/* ASTAR
+		System.out.println("ASTAR: \n\n");
+		 
+		Astar as = new Astar(board);
+		
 		System.out.println("Parents: ");
 		ArrayList<Board> cl = as.getClosed();
 		Board current = cl.get(cl.size()-1);
@@ -99,6 +103,15 @@ public class Interface {
 			}
 			if(current.getParent().equals(board))
 				break;
+		}*/
+		
+		Greedy g = new Greedy();
+		
+		ArrayList<Board> results = g.Activate(board);
+		for(int i = 0; i < results.size(); i++){
+			results.get(i).printBoard();
+			System.out.println("\n");
+			System.out.println("Score: " + results.get(i).getScore());
 		}
 			
 		System.out.println("\n");

@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,14 +73,14 @@ public class Board implements Serializable {
 		this.rows = 10;
 		this.columns = 20;
 		char temp[][] = {
+				{ 'A', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'A', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'D', 'D', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'D', 'D', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'A', 'A', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'E', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
 				{ 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'E', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-				{ 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'E', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-				{ 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'D', 'D', 'E', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-				{ 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'D', 'D', 'E', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-				{ 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'E', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-				{ 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'E', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-				{ 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'E', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-				{ 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'E', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'B', 'A', 'A', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'E', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
 				{ 'C', 'A', 'B', 'A', 'A', 'B', 'B', 'B', 'B', 'B', 'E', 'E', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
 				{ 'B', 'C', 'B', 'A', 'A', 'B', 'B', 'B', 'B', 'B', 'E', 'E', 'B', 'B', 'B', 'B', 'B', 'B', 'B',
 						'B' } };
@@ -368,4 +369,27 @@ public class Board implements Serializable {
 		return this.parent;
 	}
 
+	public static Comparator<Board> getCompByName()
+	{   
+	 Comparator comp = new Comparator<Board>(){
+	     @Override
+	     public int compare(Board s1, Board s2)
+	     {
+	         return Integer.compare(s1.getScore(), s2.getScore());
+	     }        
+	 };
+	 return comp;
+	}
+	
+	public String mattoString(){
+		StringBuilder builder = new StringBuilder();
+	    for(int i = 0; i < getColumns(); i++)
+	    {
+	        for(int j = 0; j < (int) Collections.max(col_height); j++)
+	        {
+	            builder.append(board[j][i]);
+	        }
+	    }    
+	    return builder.toString();
+	}
 }
