@@ -78,7 +78,7 @@ public class Interface {
 			}
 		}*/
 		
-		/* ASTAR
+		 //ASTAR
 		System.out.println("ASTAR: \n\n");
 		 
 		Astar as = new Astar(board);
@@ -103,9 +103,9 @@ public class Interface {
 			}
 			if(current.getParent().equals(board))
 				break;
-		}*/
+		}
 		
-		Greedy g = new Greedy();
+		/*Greedy g = new Greedy();
 		
 		ArrayList<Board> results = g.Activate(board);
 		for(int i = 0; i < results.size(); i++){
@@ -113,7 +113,7 @@ public class Interface {
 			System.out.println("\n");
 			System.out.println("Score: " + results.get(i).getScore());
 		}
-			
+			*/
 		System.out.println("\n");
 		board.printBoard();
 		System.out.println("GAME OVERRRRR !!!!!!!! ");

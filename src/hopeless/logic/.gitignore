@@ -1,3 +1,7 @@
 /Board.class
 /Position.class
 /Prolog.class
+/Astar.class
+/Astar$Cell.class
+/Astar$boardState.class
+/BoardComparator.class

@@ -52,20 +52,19 @@ public class Astar {
 			 * System.out.println("\n"); }
 			 */
 
-			//if (current_board != null)
-				try{if (current_board.checkGameOver())
-						return; // TODO check return values
+			// if (current_board != null)
+			try {
+				if (current_board.checkGameOver())
+					return; // TODO check return values
+			} catch (Exception e) {
+				if (only_once && current_board == null) {
+					System.out.println("prints: ");
+					only_once = false;
+					while (!open.isEmpty())
+						open.poll().printBoard();
 				}
-				catch(Exception e){
-					if(only_once && current_board==null){
-						System.out.println("prints: ");
-						only_once = false;
-						while(!open.isEmpty())
-							open.poll().printBoard();
-					}
-					
-				}
-					
+
+			}
 
 			ArrayList<Board> neighbours = getNeighbours(current_board);
 
@@ -73,16 +72,17 @@ public class Astar {
 				if (!closed.contains(neighbours.get(n))) {
 					PriorityQueue<Board> aux = new PriorityQueue<Board>();
 					// System.out.println("OPEN: ");
-					//while (!open.isEmpty())
-					//	open.poll(); // TODO Check if (why) this works lol
+					// while (!open.isEmpty())
+					// open.poll(); // TODO Check if (why) this works lol
 					// System.out.println("\n");
 
 					// System.out.println("DONE OPEN \n");
-					try{aux.addAll(open);}
-					catch(Exception e){
-						//System.out.println("Add all print : ");
-						//while(!open.isEmpty())
-						//	open.poll().printBoard();
+					try {
+						aux.addAll(open);
+					} catch (Exception e) {
+						// System.out.println("Add all print : ");
+						// while(!open.isEmpty())
+						// open.poll().printBoard();
 					}
 					Board existing = null;
 					if (open.contains(neighbours.get(n)))
@@ -151,43 +151,46 @@ public class Astar {
 		Vector col_height = current_board.getcol_height();
 		int columns = current_board.getColumns();
 		boolean alternate = false;
-		if(col_height.size() > 0)
-		for (int slice = 0; slice < (int) Collections.max(col_height) + columns - 1; slice++) {
-			// System.out.println("slice " + slice);
-			int z1 = slice < columns ? 0 : slice - columns + 1;
-			int z2 = slice < (int) Collections.max(col_height) ? 0 : slice - (int) Collections.max(col_height) + 1;
-			if (!alternate)
-				for (int jj = slice - z2; jj >= z1; jj--) {
-					// System.out.println(board[jj][slice-jj]);
-					if (!current_board.getVisited().contains(new Position(jj, slice - jj))) {
-						Board demo = (Board) deepClone(current_board);
-						test_boards.add(demo);
+		if (col_height.size() > 0)
+			for (int slice = 0; slice < 10 + columns - 1; slice++) {
+				// System.out.println("slice " + slice);
+				int z1 = slice < columns ? 0 : slice - columns + 1;
+				int z2 = slice < 10 ? 0 : slice - 10 + 1;
+				if (!alternate)
+					for (int jj = slice - z2; jj >= z1; jj--) {
+						// System.out.println(board[jj][slice-jj]);
+						if (current_board.getBoard()[jj][slice - jj] != ' ') {
+							if (!current_board.getVisited().contains(new Position(jj, slice - jj))) {
+								Board demo = (Board) deepClone(current_board);
+								test_boards.add(demo);
 
-						current_board.professionalalgorithm(current_board.getBoard()[jj][slice - jj], jj, slice - jj);
-						test_boards.get(index).clearVisited();
-						test_boards.get(index).professionalalgorithm(test_boards.get(index).getBoard()[jj][slice - jj],
-								jj, slice - jj);
+								current_board.professionalalgorithm(current_board.getBoard()[jj][slice - jj], jj,
+										slice - jj);
+								test_boards.get(index).clearVisited();
+								test_boards.get(index).professionalalgorithm(
+										test_boards.get(index).getBoard()[jj][slice - jj], jj, slice - jj);
 
-						if (test_boards.get(index).getVisited().size() > 1) {
-							test_boards.get(index).Click(jj, slice - jj);
-							test_boards.get(index).Heuristic();
-							test_boards.get(index).calcFinalCost();
-							test_boards.get(index).setParent(current_board); // TODO
-																				// Check
-																				// if
-																				// right
-							neighb.add(test_boards.get(index));
-							// open.get(index).printBoard();
-							index++;
-						} else
-							test_boards.remove(index);
+								if (test_boards.get(index).getVisited().size() > 1) {
+									test_boards.get(index).Click(jj, slice - jj);
+									test_boards.get(index).Heuristic();
+									test_boards.get(index).calcFinalCost();
+									test_boards.get(index).setParent(current_board); // TODO
+																						// Check
+																						// if
+																						// right
+									neighb.add(test_boards.get(index));
+									// open.get(index).printBoard();
+									index++;
+								} else
+									test_boards.remove(index);
+							}
+						}
 					}
-				}
 
-			alternate = !alternate;
-			// if(alternate)
-			// System.out.println("\n");
-		}
+				alternate = !alternate;
+				// if(alternate)
+				// System.out.println("\n");
+			}
 		return neighb;
 	}
 

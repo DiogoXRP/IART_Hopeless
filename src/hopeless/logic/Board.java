@@ -300,10 +300,10 @@ public class Board implements Serializable {
 	public void Heuristic() {
 		boolean alternate = false;
 		ArrayList<Integer> each_polygon_size = new ArrayList<Integer>();
-		for (int slice = 0; slice < (int) Collections.max(col_height) + columns - 1; slice++) {
+		for (int slice = 0; slice < 10 + columns - 1; slice++) {
 			// System.out.println("slice " + slice);
 			int z1 = slice < columns ? 0 : slice - columns + 1;
-			int z2 = slice < (int) Collections.max(col_height) ? 0 : slice - (int) Collections.max(col_height) + 1;
+			int z2 = slice < 10 ? 0 : slice - 10 + 1;
 			if (!alternate)
 				for (int jj = slice - z2; jj >= z1; jj--) {
 					int prev_vis_size = visited.size();
