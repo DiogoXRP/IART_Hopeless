@@ -24,13 +24,19 @@ public class Astar {
 	private PriorityQueue<Board> open = new PriorityQueue<Board>(40, comp);
 	private ArrayList<Board> closed = new ArrayList<Board>();
 	private ArrayList<Position> visited = new ArrayList<Position>();
+	private int max_open_size;
+	private Greedy greedy = new Greedy();
+	private ArrayList<Board> onestepgreedychilds = new ArrayList<Board>();
+	private Board finalBoard;
 
 	public Astar() {
 
 	}
 
 	public Astar(Board starting) {
+		closed.add(starting);
 		open.addAll(getNeighbours(starting));
+		// TODO quando limparmos o open, limpamos o closed;
 
 		/*
 		 * DEBUG for (int i = 0; i < open.size(); i++) {
@@ -42,32 +48,36 @@ public class Astar {
 		 */
 		boolean only_once = true;
 		while (true) {
-			System.out.println("open size: " + open.size());
-			current_board = (Board) deepClone(open.poll());
-			closed.add(current_board);
-			/*
-			 * DEBUG System.out.println("prints: " + current_board.finalCost +
-			 * "\n"); while(!open.isEmpty()){ Board temp = open.poll();
-			 * temp.printBoard(); System.out.println("F: " + temp.finalCost);
-			 * System.out.println("\n"); }
-			 */
 
-			// if (current_board != null)
-			try {
-				if (current_board.checkGameOver())
-					return; // TODO check return values
-			} catch (Exception e) {
-				if (only_once && current_board == null) {
-					System.out.println("prints: ");
-					only_once = false;
-					while (!open.isEmpty())
-						open.poll().printBoard();
+
+			max_open_size = open.size();
+			if (open.size() == max_open_size) {
+				for (int o = 0; o < max_open_size; o++) {
+					if(current_board.checkGameOver()){
+						finalBoard = current_board;
+						return;
+					}
+					current_board = (Board) deepClone(open.poll());
+					onestepgreedychilds.add(greedy.oneStepGreedy(current_board));
 				}
-
+				Collections.sort(onestepgreedychilds, Board.getCompByName());
+				Collections.reverse(onestepgreedychilds);
+				current_board = (Board) deepClone(onestepgreedychilds.get(0));
+				open.clear();
+				closed.clear();
 			}
-
+			
+			
+			if(current_board.checkGameOver()){
+				finalBoard = current_board;
+				return;
+			}
+			
 			ArrayList<Board> neighbours = getNeighbours(current_board);
-
+			
+			//open.addAll(neighbours);
+			
+			//max_open_size = neighbours.size();
 			for (int n = 0; n < neighbours.size(); n++) {
 				if (!closed.contains(neighbours.get(n))) {
 					PriorityQueue<Board> aux = new PriorityQueue<Board>();
@@ -234,5 +244,9 @@ public class Astar {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public Board getFinalBoard(){
+		return finalBoard;
 	}
 }

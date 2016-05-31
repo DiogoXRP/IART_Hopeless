@@ -83,7 +83,20 @@ public class Interface {
 		 
 		Astar as = new Astar(board);
 		
-		System.out.println("Parents: ");
+		Board curr_board = as.getFinalBoard();
+		
+		while(curr_board.getParent()!=null){
+			curr_board.printBoard();
+			System.out.println("\n Score: " + curr_board.getScore() + "\n");
+			curr_board = curr_board.getParent();
+			try{
+				Thread.sleep(1000);
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		/*System.out.println("Parents: ");
 		ArrayList<Board> cl = as.getClosed();
 		Board current = cl.get(cl.size()-1);
 		current.printBoard();
@@ -103,7 +116,7 @@ public class Interface {
 			}
 			if(current.getParent().equals(board))
 				break;
-		}
+		}*/
 		
 		/*Greedy g = new Greedy();
 		

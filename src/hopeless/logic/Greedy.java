@@ -56,7 +56,7 @@ public class Greedy {
 			closed.add(current_board);
 			System.out.println("\n Current: \n");
 			current_board.printBoard();
-			
+
 			open.clear();
 		}
 
@@ -72,22 +72,22 @@ public class Greedy {
 		Vector col_height = current_board.getcol_height();
 		int columns = current_board.getColumns();
 		boolean alternate = false;
-		System.out.println("\n\n\n\n\n\nNOVA ITERAÇAO: \n");
+		//System.out.println("\n\n\n\n\n\nNOVA ITERAÇAO: \n");
 		if (col_height.size() > 0)
 			for (int slice = 0; slice < 10 + columns - 1; slice++) {
 				// System.out.println("slice " + slice);
 				int z1 = slice < columns ? 0 : slice - columns + 1;
 				int z2 = slice < 10 ? 0 : slice - 10 + 1;
-				System.out.print("\nDiagonal: ");
+				//System.out.print("\nDiagonal: ");
 				if (!alternate)
 					for (int jj = slice - z2; jj >= z1; jj--) {
-						System.out.println("Curr board inside: ");
-						current_board.printBoard();
-						System.out.println("mano\n " + current_board.getBoard()[jj][slice-jj]);
-						
+						//System.out.println("Curr board inside: ");
+						//current_board.printBoard();
+						//System.out.println("mano\n " + current_board.getBoard()[jj][slice - jj]);
+
 						if (current_board.getBoard()[jj][slice - jj] != ' ') {
 							// System.out.println(board[jj][slice-jj]);
-							System.out.print(current_board.getBoard()[jj][slice - jj]);
+							//System.out.print(current_board.getBoard()[jj][slice - jj]);
 							if (!current_board.getVisited().contains(new Position(jj, slice - jj))) {
 								Board demo = (Board) deepClone(current_board);
 								test_boards.add(demo);
@@ -121,6 +121,23 @@ public class Greedy {
 				// System.out.println("\n");
 			}
 		return neighb;
+	}
+
+	public Board oneStepGreedy(Board starting) {
+		current_board = (Board) deepClone(starting);
+		int aux = 0;
+
+		// System.out.println("index: " + index);
+		ArrayList<Board> setcontent = new ArrayList<Board>();
+		ArrayList<Board> neighbours = getNeighbours(current_board);
+		open.addAll(neighbours);
+		setcontent.clear();
+		setcontent.addAll(open);
+		Collections.sort(setcontent, Board.getCompByName());
+		Collections.reverse(setcontent);
+
+		return setcontent.get(0);
+
 	}
 
 	public static Object deepClone(Object object) {
