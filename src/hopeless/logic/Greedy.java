@@ -80,9 +80,11 @@ public class Greedy {
 			// System.out.println("slice " + slice);
 			int z1 = slice < columns ? 0 : slice - columns + 1;
 			int z2 = slice < (int) Collections.max(col_height) ? 0 : slice - (int) Collections.max(col_height) + 1;
+			System.out.print("\nDiagonal: ");
 			if (!alternate)
 				for (int jj = slice - z2; jj >= z1; jj--) {
 					// System.out.println(board[jj][slice-jj]);
+					System.out.print(current_board.getBoard()[jj][slice-jj]);
 					if (!current_board.getVisited().contains(new Position(jj, slice - jj))) {
 						Board demo = (Board) deepClone(current_board);
 						test_boards.add(demo);
@@ -108,7 +110,6 @@ public class Greedy {
 							test_boards.remove(indexx);
 					}
 				}
-
 			alternate = !alternate;
 			// if(alternate)
 			// System.out.println("\n");
