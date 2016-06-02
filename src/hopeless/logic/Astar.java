@@ -49,81 +49,106 @@ public class Astar {
 		boolean only_once = true;
 		while (true) {
 
-
 			max_open_size = open.size();
 			if (open.size() == max_open_size) {
 				for (int o = 0; o < max_open_size; o++) {
-					if(current_board.checkGameOver()){
+					if (current_board.checkGameOver()) {
 						finalBoard = current_board;
 						return;
 					}
 					current_board = (Board) deepClone(open.poll());
+					/*PROB2 current_board.printBoard();
+					System.out.println("\n");*/
 					onestepgreedychilds.add(greedy.oneStepGreedy(current_board));
 				}
 				Collections.sort(onestepgreedychilds, Board.getCompByName());
 				Collections.reverse(onestepgreedychilds);
-				current_board = (Board) deepClone(onestepgreedychilds.get(0));
+				/*PROB2 for (int i = 0; i < onestepgreedychilds.size(); i++) {
+					System.out.println("get" + i + ": " + onestepgreedychilds.get(i).getFinalCost());
+					onestepgreedychilds.get(i).printBoard();
+				}
+				System.out.println("TEST : ");
+				current_board.printBoard();
+				System.out.println("END TEST ");*/
+				// System.exit(0);
+				if(!onestepgreedychilds.isEmpty())
+					current_board = (Board) deepClone(onestepgreedychilds.get(0));
 				open.clear();
 				closed.clear();
+				onestepgreedychilds.clear();
 			}
-			
-			
-			if(current_board.checkGameOver()){
+			/*PROB2 System.out.println("\n\nCURRENT BOARD: \n\n");
+			current_board.printBoard();
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			current_board.printBoard(); */
+			if (current_board.checkGameOver()) {
 				finalBoard = current_board;
 				return;
 			}
-			
+
 			ArrayList<Board> neighbours = getNeighbours(current_board);
-			
-			//open.addAll(neighbours);
-			
-			//max_open_size = neighbours.size();
-			for (int n = 0; n < neighbours.size(); n++) {
-				if (!closed.contains(neighbours.get(n))) {
-					PriorityQueue<Board> aux = new PriorityQueue<Board>();
-					// System.out.println("OPEN: ");
-					// while (!open.isEmpty())
-					// open.poll(); // TODO Check if (why) this works lol
-					// System.out.println("\n");
-
-					// System.out.println("DONE OPEN \n");
-					try {
-						aux.addAll(open);
-					} catch (Exception e) {
-						// System.out.println("Add all print : ");
-						// while(!open.isEmpty())
-						// open.poll().printBoard();
-					}
-					Board existing = null;
-					if (open.contains(neighbours.get(n)))
-						existing = (Board) deepClone(retrieveBoard(neighbours.get(n), aux));
-					if ((open.contains(neighbours.get(n)) && neighbours.get(n).isPathShorterThan(existing))
-							|| !open.contains(neighbours.get(n))) {
-						if (open.contains(neighbours.get(n))) {
-							neighbours.get(n).setParent(current_board);
-							PriorityQueue<Board> replace = new PriorityQueue<Board>();// set
-																						// neighbours.get(n)
-																						// to
-																						// replace
-																						// previous
-																						// open
-																						// element
-							PriorityQueue<Board> aux2 = new PriorityQueue<Board>();
-							aux2.addAll(open);
-							replace.addAll(replace(neighbours.get(n), aux2));
-							open.clear(); // empty open
-							open.addAll(replace);
-						}
-						if (!open.contains(neighbours.get(n))) {
-							System.out.print(".");
-							neighbours.get(n).setParent(current_board);
-							open.add(neighbours.get(n));
-						}
-
-					}
+			/*PROB2 System.out.println("NEIGHBOURS SIZE: " + neighbours.size());
+			neighbours.get(0).printBoard();
+			System.out.println("NEIGHBOURS SIZE END");*/
+			for(int ne = 0 ; ne < neighbours.size(); ne++){
+				if(neighbours.get(ne).checkGameOver()){
+					finalBoard = neighbours.get(ne);
+					return;
 				}
-
 			}
+			// open.addAll(neighbours);
+
+			// max_open_size = neighbours.size();
+			for (int n = 0; n < neighbours.size(); n++) {
+				// ATTEMPT if (!closed.contains(neighbours.get(n))) {
+				PriorityQueue<Board> aux = new PriorityQueue<Board>();
+				// System.out.println("OPEN: ");
+				// while (!open.isEmpty())
+				// open.poll(); // TODO Check if (why) this works lol
+				// System.out.println("\n");
+
+				// System.out.println("DONE OPEN \n");
+				try {
+					aux.addAll(open);
+				} catch (Exception e) {
+					// System.out.println("Add all print : ");
+					// while(!open.isEmpty())
+					// open.poll().printBoard();
+				}
+				Board existing = null;
+				if (open.contains(neighbours.get(n)))
+					existing = (Board) deepClone(retrieveBoard(neighbours.get(n), aux));
+				if ((open.contains(neighbours.get(n)) && neighbours.get(n).isPathShorterThan(existing))
+						|| !open.contains(neighbours.get(n))) {
+					if (open.contains(neighbours.get(n))) {
+						neighbours.get(n).setParent(current_board);
+						PriorityQueue<Board> replace = new PriorityQueue<Board>();// set
+																					// neighbours.get(n)
+																					// to
+																					// replace
+																					// previous
+																					// open
+																					// element
+						PriorityQueue<Board> aux2 = new PriorityQueue<Board>();
+						aux2.addAll(open);
+						replace.addAll(replace(neighbours.get(n), aux2));
+						open.clear(); // empty open
+						open.addAll(replace);
+					}
+					if (!open.contains(neighbours.get(n))) {
+						System.out.print(".");
+						neighbours.get(n).setParent(current_board);
+						open.add(neighbours.get(n));
+					}
+
+				}
+			}
+
+			// ATTEMPT}
 		}
 	}
 
@@ -246,7 +271,7 @@ public class Astar {
 		}
 	}
 
-	public Board getFinalBoard(){
+	public Board getFinalBoard() {
 		return finalBoard;
 	}
 }

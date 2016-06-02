@@ -102,7 +102,7 @@ public class Greedy {
 									test_boards.get(indexx).Click(jj, slice - jj);
 									test_boards.get(indexx).Heuristic();
 									test_boards.get(indexx).calcFinalCost();
-									// test_boards.get(indexx).setParent(current_board);
+									test_boards.get(indexx).setParent(current_board);
 									// // TODO
 									// Check
 									// if
@@ -127,6 +127,7 @@ public class Greedy {
 		current_board = (Board) deepClone(starting);
 		int aux = 0;
 
+		open.clear();
 		// System.out.println("index: " + index);
 		ArrayList<Board> setcontent = new ArrayList<Board>();
 		ArrayList<Board> neighbours = getNeighbours(current_board);

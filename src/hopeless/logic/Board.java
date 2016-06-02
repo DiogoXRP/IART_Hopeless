@@ -73,16 +73,16 @@ public class Board implements Serializable {
 		this.rows = 10;
 		this.columns = 20;
 		char temp[][] = {
-				{ 'A', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-				{ 'A', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-				{ 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'D', 'D', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-				{ 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'D', 'D', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
 				{ 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-				{ 'A', 'A', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'E', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-				{ 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'E', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-				{ 'B', 'A', 'A', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'E', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-				{ 'C', 'A', 'B', 'A', 'A', 'B', 'B', 'B', 'B', 'B', 'E', 'E', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
-				{ 'B', 'C', 'B', 'A', 'A', 'B', 'B', 'B', 'B', 'B', 'E', 'E', 'B', 'B', 'B', 'B', 'B', 'B', 'B',
+				{ 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'E', 'B', 'B' },
+				{ 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B' },
+				{ 'B', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'E', 'B',
 						'B' } };
 		this.board = temp;
 		if (dificulty == 3 || dificulty == 4 || dificulty == 5 || dificulty == 6) {
@@ -325,6 +325,10 @@ public class Board implements Serializable {
 		// DEBUG System.out.println("heuristicCost: " + this.heuristicCost);
 		//System.out.println("Score: " + this.score);
 		//System.out.println("final cost: " + this.finalCost);
+	}
+	
+	public double getFinalCost(){
+		return this.finalCost;
 	}
 
 	/*
